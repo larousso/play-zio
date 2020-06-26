@@ -28,10 +28,8 @@ package object modules {
 
     type Eff[A] = ZIO[ZEnv, Throwable, A]
 
-    private val memoize: ZManaged[Any, Nothing, ZLayer[ZEnv, Throwable, AppContext]] = AppContext.live.memoize
-
     private implicit val (appContext: ZLayer[zio.ZEnv, Throwable, AppContext], release: Eff[Unit]) =
-      Runtime.default.unsafeRun(memoize.toResource[Eff].allocated)
+      Runtime.default.unsafeRun(AppContext.live.memoize.toResource[Eff].allocated)
 
     applicationLifecycle.addStopHook(() => Runtime.default.unsafeRunToFuture(release))
 
