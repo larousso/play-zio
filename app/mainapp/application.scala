@@ -80,7 +80,7 @@ package object commons {
     def debug(message: => String)(implicit mc: MarkerContext): URIO[AppLogger, Unit] =
       ZIO.accessM(_.get.debug(message))
 
-    val live: Layer[Throwable, AppLogger] = ZLayer.succeed(new ProdLogger())
+    val live: ZLayer[Any, Nothing, AppLogger] = ZLayer.succeed(new ProdLogger())
 
     class ProdLogger(logger: Logger = Logger("application")) extends AppLogger.Service {
       override def info(message: => String)(implicit mc: MarkerContext): UIO[Unit]  = UIO(logger.info(message))
